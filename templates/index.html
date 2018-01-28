@@ -1,0 +1,109 @@
+<!--Copyright © 2016 Nuance Communications, Inc. All rights reserved.-->
+<!--Published by Nuance Communications, Inc.-->
+<!--One Wayside Road, Burlington, Massachusetts 01803, U.S.A.-->
+
+<!DOCTYPE HTML>
+<html lang='en'>
+<head>
+    <meta charset='utf-8'>
+    <title>Nuance Websockets JS Sample</title>
+
+    <!--  LIBRARY DEPS -->
+    <link href="../static/lib/bootstrap.min.css" rel="stylesheet">
+    <link href='../static/lib/font-awesome.min.css' rel="stylesheet">
+    <link href='../static/styles/style.css' rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet" type="text/css">
+
+    <script src="../static/lib/jquery.min.js"></script>
+    <script src="../static/lib/bootstrap.min.js"></script>
+
+    <!--  WEB SDK DEPS -->
+    <script src='../static/lib/resampler.js'></script>
+    <script src='../static/lib/speex.js'></script>
+    <script src='../static/lib/nuance.js'></script>
+</head>
+<body>
+
+<div id="content" class='container'>
+    <!--  HEADER -->
+    <h1 class='page-header'>
+        <img style="margin-left: 25px;" src="../static/images/mario.jpeg" width="220px"> SmartPillbox
+    </h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="app">
+                <h1 id="app_type"></h1>
+                <h1 id="app_size"></h1>
+                <h1 id="app_price"></h1>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card card-options">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                            <a id="nav-options" class="nav-link">Schedule</a>
+                        </li>
+                        <li id="microphone" align="right">
+                            <button id="audio_recognition" type="button" class="btn btn-primary btn-circle btn-xl">
+                                <i class="fa fa-microphone fa-3x"></i>
+                            </button>
+                        </li>
+                        <li>
+                            <button id="status_label" type="button" class="btn-xlarge">Ready</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="panel-inputs" class="card-block">
+                    <div id="asr" class="mix-interaction">
+                        <div id="dialog-output" class="chat-output"></div>
+                    </div>
+
+                    <form class='form' role='form' onsubmit="$('#text_recognition').click();return false;">
+                    </form>
+                </div>
+                <br>
+                <div id="panel-options" class="card-block">
+                    <form id="ttsASR" class="form" >
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input id="enable_tts" type="checkbox"> TTS
+                            </label>
+                        </div>
+                        <br>
+                    </form>
+                    <form action="/schedule" method="POST"> 
+                        <div class = "input-group">
+                            <div>
+                                <label>Set Timer for your next medication pill:</label>
+                                <input type="time" name='startTime' id="startTime">
+                            </div>
+                            <br>
+                            <div>
+                                <button type="submit" class="btn btn-success btn-block btn-lg">
+                                    Update!
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div id="nlu_debug_output" class="panel-body"></div>
+    </div>
+
+    
+
+</div>
+
+<!--  APPLICATION -->
+<script src="../static/lib/panels.js"></script>
+<script src="../static/js/coffee.js"></script>
+<script src='../static/js/configuration.js'></script>
+<script src='../static/js/app.js'></script>
+
+
+</body>
+</html>
