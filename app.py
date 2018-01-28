@@ -2,7 +2,6 @@ import json
 from flask import Flask, redirect, request, render_template, jsonify
 import time
 import threading
-from alert_sms import send_sms
 import timer_count
 
 app = Flask(__name__)
@@ -14,7 +13,12 @@ COUNT = None
 
 
 @app.route('/')
-def home():  
+def home():
+    if SCHEDULE_TIME is None: 
+        print('SET COUNTER NOW!')
+        global COUNT
+        COUNT = timer_count.TimerClass(60)
+        COUNT.start() 
     return render_template('index.html')
 
 
@@ -28,33 +32,25 @@ def scheduleRequest():
     time_list = str_time.split(':')
     time_second = int(time_list[0]) * 3600 + int(time_list[1]) * 60
     # setReset(True)
+    global SCHEDULE_TIME
     SCHEDULE_TIME = time_second
-    COUNT = timer_count.TimerClass(time_second, INTERRUPT_FLAG)
+    if COUNT is not None:
+        COUNT.stop(nav=False)
+    global COUNT
+    COUNT = timer_count.TimerClass(time_second)
     COUNT.start()
     return render_template('index.html')
-
-def setReset(flag):
-    RESET = flag
-
-def countDown():
-    while SCHEDULE_TIME<0:
-        if INTERRUPT_FLAG:
-            break
-        time.sleep(1)
-        SCHEDULE_TIME -= 1
-
-    # Send message through twilio
-    if SCHEDULE_TIME == 0 and not INTERRUPT_FLAG:
-        send_sms('"Oh Nooo....You forgot to take your medication today!!!"') 
-        return render_template('index.html')
-
-    if INTERRUPT_FLAG:
-        INTERRUPT_FLAG = False
-        return render_template('index.html')
 
 
 @app.route('/schedule/count', methods=['PUT'])
 def restart_count():
+    print(SCHEDULE_TIME)
+    if SCHEDULE_TIME is None:
+        global SCHEDULE_TIME
+        SCHEDULE_TIME = 60
+    global COUNTER
+    COUNT = timer_count.TimerClass(SCHEDULE_TIME)
+    COUNT.start()
     return jsonify({'status': 'success'})
 
 @app.route('/schedule/interrupt', methods=['PUT'])
@@ -64,9 +60,15 @@ def interruptCount():
     :param list_time: float list of time stamp in second
     :return None
     """
-    # INTERRUPT_FLAG = True
+    
     COUNT.stop()
+    global COUNT
+    COUNT = None
+    print('am i send response?')
     return jsonify({'status': 'success'})
+
+def navigate():
+    redirect('/')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
