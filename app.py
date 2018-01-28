@@ -3,12 +3,14 @@ from flask import Flask, redirect, request, render_template, jsonify
 import time
 import threading
 from alert_sms import send_sms
+import timer_count
 
 app = Flask(__name__)
 
 INTERRUPT_FLAG = False  # Signal from Raspi
-SCHEDULE_TIME = "00:03" # Default time 3min 
+SCHEDULE_TIME = None # Default time 3min 
 RESET = False
+COUNT = None
 
 
 @app.route('/')
@@ -27,6 +29,8 @@ def scheduleRequest():
     time_second = int(time_list[0]) * 3600 + int(time_list[1]) * 60
     # setReset(True)
     SCHEDULE_TIME = time_second
+    COUNT = timer_count.TimerClass(time_second, INTERRUPT_FLAG)
+    COUNT.start()
     return render_template('index.html')
 
 def setReset(flag):
@@ -51,7 +55,6 @@ def countDown():
 
 @app.route('/schedule/count', methods=['PUT'])
 def restart_count():
-    countDown()
     return jsonify({'status': 'success'})
 
 @app.route('/schedule/interrupt', methods=['PUT'])
@@ -62,6 +65,7 @@ def interruptCount():
     :return None
     """
     # INTERRUPT_FLAG = True
+    COUNT.stop()
     return jsonify({'status': 'success'})
 
 if __name__ == '__main__':

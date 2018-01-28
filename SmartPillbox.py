@@ -14,7 +14,7 @@ GPIO.output(6,GPIO.LOW)
 GPIO.setup(13,GPIO.OUT)
 GPIO.output(13,ledState) 
 
-conn = http.client.HTTPConnection("0.0.0.0:5000") # Can ip address point to application
+conn = http.client.HTTPConnection("18.218.238.140") # Can ip address point to application
 
 headers = {
     'authorization': "Basic ZDRmNjk5YmE3ODVjNGU4Nzg2MmY3NzRkNWY3NDVjZTU6MzQ5MjBlOTkyN2I5NGY1ZDhmMTEyM2VjMzViODlhNzA=",
@@ -34,7 +34,7 @@ def coverClose():
 	res = conn.getresponse()
     data = res.read()
     print(data.decode("utf-8"))
-    
+
 
 #GPIO.output(6,GPIO.LOW) - LED off
 #GPIO.output(6,GPIO.HIGH) - LED on
